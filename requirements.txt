@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+detoxify
+torch

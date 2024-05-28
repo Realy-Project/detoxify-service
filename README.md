@@ -14,13 +14,11 @@ or
 
     docker run -d -p 8000:80 -e API_TOKEN=secret_token serg123e/detoxify-service:latest
 
-On the first run the service downloads 1.3Gb model and only after that starts to respond
-
 ## Local run
 
     pip install -r requirements.txt
     cd app
-    uvicorn app:app
+    API_TOKEN=secret_token uvicorn app:app
 
 ## Test
     curl 'http://127.0.0.1:8000/detoxify/' -X POST -H 'Content-Type: application/json' -H "Authorization: secret_token" --data-raw '{"tags": ["тест"]}'
@@ -28,7 +26,7 @@ On the first run the service downloads 1.3Gb model and only after that starts to
 
 ## Authentication
 
-If the environment variable API_TOKEN is not set, you can simply use:
+If the environment variable API_TOKEN is not set, you can make requests without authentication:
 
     curl 'http://127.0.0.1:8000/detoxify/' -X POST -H 'Content-Type: application/json' --data-raw '{"tags": ["traje","negro"]}'
 

@@ -8,17 +8,28 @@ and works with `English`, `French`, `Spanish`, `Italian`, `Portuguese`, `Turkish
 ## Run in docker
 
     docker build -t detoxify-service .
-    docker run -d -p 8000:80 -e API_TOKEN=secret_token detoxify-service
+    docker run -d -p 8000:80 -e API_TOKEN=secret_token -v detoxify-models:/models detoxify-service
 
 or
 
-    docker run -d -p 8000:80 -e API_TOKEN=secret_token serg123e/detoxify-service:latest
+    docker run -d -p 8000:80 -e API_TOKEN=secret_token -v detoxify-models:/models serg123e/detoxify-service:latest
+
+### Model storage
+
+Models are not baked into the image. Mount a persistent volume at `/models` (`MODEL_DIR`).
+On the first start the container downloads the model (~1 GB), quantizes it to int8 and saves it
+there (takes a few minutes). Every later start and deploy just loads the saved file, so the volume
+must survive redeploys. The saved file is specific to the torch version and CPU type; if either
+changes, it is rebuilt automatically on the next start.
+
+The quantized model uses roughly half the memory of the original, and scores differ slightly
+from the full-precision model.
 
 ## Local run
 
     pip install -r requirements.txt
     cd app
-    API_TOKEN=secret_token uvicorn app:app
+    MODEL_DIR=./models API_TOKEN=secret_token uvicorn app:app
 
 ## Test
     curl 'http://127.0.0.1:8000/detoxify/' -X POST -H 'Content-Type: application/json' -H "Authorization: secret_token" --data-raw '{"tags": ["тест"]}'

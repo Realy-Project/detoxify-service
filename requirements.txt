@@ -3,4 +3,4 @@ python-multipart
 fastapi
 uvicorn
 detoxify
-torch
+torch==2.14.1

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, HTTPException, Depends, Request
 from fastapi.security.api_key import APIKeyHeader
 from typing import List, Dict, Any
 from pydantic import BaseModel
-from detoxify import Detoxify
+import model_store
 from fastapi.responses import HTMLResponse, JSONResponse
 import re
 import os
@@ -19,8 +19,8 @@ else:
   print("API_TOKEN not specified, authorization DISABLED. Do not expose the service to public")
 
 
-# Load the model, on first run will download ~1Gb
-model = Detoxify('multilingual')
+# Load the quantized model from MODEL_DIR (built once, see model_store.py)
+model = model_store.load()
 
 class TextInput(BaseModel):
     tags: List[str]
